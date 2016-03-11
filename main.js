@@ -9,7 +9,6 @@ var Game = {
 	init: function(){
 		this.display = new ROT.Display();
 		document.body.appendChild(this.display.getContainer());
-		//this.display.draw(5,  4, "@");
 		this.generateMap();
 	},
 
