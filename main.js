@@ -37,7 +37,7 @@ Player.prototype.handleEvent = function(e){
 	}
 
 	// Draw what was beneath the player:
-	Game.display.draw(this.x, this.y, Game.map[this.x+","+this.y])
+	Game.drawPartMap(this.x+","+this.y)
 	this.x = x1;
 	this.y = y1;
 	this.draw();
@@ -100,11 +100,15 @@ var Game = {
 
 	drawWholeMap: function(){
 		for(var key in this.map){
-			var parts = key.split(",");
-			var x = parseInt(parts[0]);
-			var y = parseInt(parts[1]);
-			this.display.draw(x, y, this.map[key], this.colors[this.map[key]]);
+			this.drawPartMap(key);
 		}
+	},
+
+	drawPartMap: function(key){
+		var parts = key.split(",");
+		var x = parseInt(parts[0]);
+		var y = parseInt(parts[1]);
+		this.display.draw(x, y, this.map[key], this.colors[this.map[key]]);
 	},
 };
 
