@@ -24,6 +24,12 @@ Player.prototype.act = function(){
 
 Player.prototype.handleEvent = function(e){
 	var c = e.keyCode;
+
+	if(c === 13 || c === 32){
+		this.openBox();
+		return;
+	}
+
 	if(!(c in keymap)){
 		return;
 	}
@@ -45,10 +51,23 @@ Player.prototype.handleEvent = function(e){
 	Game.engine.unlock();
 };
 
+Player.prototype.openBox = function(){
+	var key = this.x + "," + this.y;
+	if(Game.map[key] != "*"){
+		return;
+	}
+	if(key === Game.prize){
+		alert("you did it, hooray.");
+		return;
+	}
+	alert("you didn't do it, boo.");
+};
+
 var Game = {
 	engine: null,
 	display: null,
 	player: null,
+	prize: null,
 	map: {},
 	colors: {
 		'.': '#fff',
@@ -86,6 +105,7 @@ var Game = {
 	},
 
 	generateBoxes: function(cells){
+		this.prize = cells[0];
 		for(var i = 0; i < 10; i++){
 			this.map[cells[i]] = "*";
 		}
