@@ -132,8 +132,8 @@ var Game = {
 			document.body.appendChild(Game.display.getContainer());
 			Game.generateMap();
 			var sched = new ROT.Scheduler.Simple();
-			sched.add(this.player, true);
-			sched.add(this.enemy, true);
+			sched.add(Game.player, true);
+			sched.add(Game.enemy, true);
 			Game.engine = new ROT.Engine(sched);
 			Game.engine.start();
 		};
