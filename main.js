@@ -1,13 +1,17 @@
 var keymap = {};
-keymap[38] = 0;
+keymap[38] = 0; // up
 keymap[33] = 1;
-keymap[39] = 2;
+keymap[39] = 2; // right
 keymap[34] = 3;
-keymap[40] = 4;
+keymap[40] = 4; // down
 keymap[35] = 5;
-keymap[37] = 6;
+keymap[37] = 6; // left
 keymap[36] = 7;
-
+// ESDF
+keymap[ROT["VK_E"]] = 0;
+keymap[ROT["VK_S"]] = 6;
+keymap[ROT["VK_D"]] = 4;
+keymap[ROT["VK_F"]] = 2;
 
 var Player = function(x, y){
 	this.x = x;
