@@ -8,6 +8,7 @@ keymap[35] = 5;
 keymap[37] = 6;
 keymap[36] = 7;
 
+
 var Player = function(x, y){
 	this.x = x;
 	this.y = y;
@@ -110,14 +111,32 @@ var Game = {
 	},
 
 	init: function(){
-		this.display = new ROT.Display();
-		document.body.appendChild(this.display.getContainer());
-		this.generateMap();
-		var sched = new ROT.Scheduler.Simple();
-		sched.add(this.player, true);
-		sched.add(this.enemy, true);
-		this.engine = new ROT.Engine(sched);
-		this.engine.start();
+		var tileset = document.createElement("img");
+		tileset.src = "tiles.png";
+		var options = {
+			layout: "tile",
+			bg: "transparent",
+			tileWidth: 32,
+			tileHeight: 32,
+			tileSet: tileset,
+			tileMap: {
+				".": [0, 0],
+				"*": [32, 0],
+				"@": [0, 32],
+				"&": [32, 32]
+			},
+		};
+		this.display = new ROT.Display(options);
+
+		tileset.onload = function(){
+			document.body.appendChild(Game.display.getContainer());
+			Game.generateMap();
+			var sched = new ROT.Scheduler.Simple();
+			sched.add(this.player, true);
+			sched.add(this.enemy, true);
+			Game.engine = new ROT.Engine(sched);
+			Game.engine.start();
+		};
 	},
 
 	generateMap: function(){
