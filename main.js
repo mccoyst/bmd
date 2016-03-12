@@ -43,7 +43,7 @@ Player.prototype.handleEvent = function(e){
 	}
 
 	// Draw what was beneath the player:
-	Game.drawPartMap(this.x+","+this.y)
+	Game.drawPartMap(this.x+","+this.y);
 	this.x = x1;
 	this.y = y1;
 	this.draw();
@@ -63,6 +63,41 @@ Player.prototype.openBox = function(){
 	alert("you didn't do it, boo.");
 };
 
+var Opponent = function(x, y){
+	this.x = x;
+	this.y = y;
+};
+
+Opponent.prototype.draw = function(){
+	Game.display.draw(this.x, this.y, "☹", "#911");
+};
+
+Opponent.prototype.act = function(){
+	var passable = function(x, y){
+		return x+","+y in Game.map;
+	};
+	var astar = new ROT.Path.AStar(Game.player.x, Game.player.y, passable, {topology:4});
+	if(!astar){
+		alert("help");
+	}
+	var path = [];
+	var addpath = function(x, y){
+		path.push([x, y]);
+	};
+	astar.compute(this.x, this.y, addpath);
+
+	path.shift();
+	if(path.length === 1){
+		Game.engine.lock();
+		alert("LOSER");
+	}else{
+		Game.drawPartMap(this.x+","+this.y);
+		this.x = path[0][0];
+		this.y = path[0][1];
+		this.draw();
+	}
+};
+
 var Game = {
 	engine: null,
 	display: null,
@@ -80,6 +115,7 @@ var Game = {
 		this.generateMap();
 		var sched = new ROT.Scheduler.Simple();
 		sched.add(this.player, true);
+		sched.add(this.enemy, true);
 		this.engine = new ROT.Engine(sched);
 		this.engine.start();
 	},
@@ -99,9 +135,11 @@ var Game = {
 		digger.create(store.bind(this));
 		cells = cells.randomize();
 		this.generateBoxes(cells.slice(0,10));
-		this.generatePlayer(cells.slice(10,11));
+		this.player = this.createBeing(Player, cells.slice(10,11));
+		this.enemy = this.createBeing(Opponent, cells.slice(11,12));
 		this.drawWholeMap();
 		this.player.draw();
+		this.enemy.draw();
 	},
 
 	generateBoxes: function(cells){
@@ -129,6 +167,13 @@ var Game = {
 		var x = parseInt(parts[0]);
 		var y = parseInt(parts[1]);
 		this.display.draw(x, y, this.map[key], this.colors[this.map[key]]);
+	},
+
+	createBeing: function(what, cells){
+		var parts = cells[0].split(",");
+		var x = parseInt(parts[0]);
+		var y = parseInt(parts[1]);
+		return new what(x, y);
 	},
 };
 
