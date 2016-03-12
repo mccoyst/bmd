@@ -69,7 +69,7 @@ var Opponent = function(x, y){
 };
 
 Opponent.prototype.draw = function(){
-	Game.display.draw(this.x, this.y, "☹", "#911");
+	Game.display.draw(this.x, this.y, "&", "#911");
 };
 
 Opponent.prototype.act = function(){
