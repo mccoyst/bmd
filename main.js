@@ -200,7 +200,6 @@ var Game = {
 		var o = this.display.getOptions();
 		var offx = Math.floor(o.width / 4) - this.player.x;
 		var offy = Math.floor(o.height / 2) - this.player.y;
-		console.log("offx " + offx + ", offy " + offy);
 		x = x + offx;
 		if(x < 0) return;
 		y = y + offy;
