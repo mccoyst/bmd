@@ -136,7 +136,12 @@ var Game = {
 		this.display = new ROT.Display(options);
 
 		tileset.onload = function(){
-			document.body.appendChild(Game.display.getContainer());
+			var canvas = Game.display.getContainer();
+			document.body.appendChild(canvas);
+			var cx = canvas.getContext("2d");
+			cx.imageSmoothingEnabled = false;
+
+
 			Game.generateMap();
 			var sched = new ROT.Scheduler.Simple();
 			sched.add(Game.player, true);
