@@ -139,6 +139,8 @@ var Game = {
 
 		tileset.onload = function(){
 			var canvas = Game.display.getContainer();
+			canvas.style['border-style'] = 'solid';
+			canvas.style['border-width'] = '1px';
 			document.body.appendChild(canvas);
 			var cx = canvas.getContext("2d");
 			cx.imageSmoothingEnabled = false;
