@@ -132,15 +132,30 @@ var Game = {
 				"@": [0, 32],
 				"&": [32, 32]
 			},
+			width: 18,
+			height: 18,
 		};
 		this.display = new ROT.Display(options);
 
 		tileset.onload = function(){
 			var canvas = Game.display.getContainer();
+			canvas.style['border-style'] = 'solid';
+			canvas.style['border-width'] = '1px';
 			document.body.appendChild(canvas);
 			var cx = canvas.getContext("2d");
-			cx.imageSmoothingEnabled = false;
 
+			if (window.devicePixelRatio > 1) {
+				var cw = canvas.width;
+				var ch = canvas.height;
+
+				canvas.width = cw * window.devicePixelRatio;
+				canvas.height = ch * window.devicePixelRatio;
+				canvas.style.width = cw + 'px';
+				canvas.style.height = ch + 'px';
+
+				cx.scale(window.devicePixelRatio, window.devicePixelRatio);
+				cx.imageSmoothingEnabled = false;
+			}
 
 			Game.generateMap();
 			var sched = new ROT.Scheduler.Simple();
@@ -203,7 +218,7 @@ var Game = {
 
 	drawRelative: function(x, y, c, color){
 		var o = this.display.getOptions();
-		var offx = Math.floor(o.width / 4) - this.player.x;
+		var offx = Math.floor(o.width / 2) - this.player.x;
 		var offy = Math.floor(o.height / 2) - this.player.y;
 		x = x + offx;
 		if(x < 0) return;
