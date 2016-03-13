@@ -132,6 +132,8 @@ var Game = {
 				"@": [0, 32],
 				"&": [32, 32]
 			},
+			width: 18,
+			height: 18,
 		};
 		this.display = new ROT.Display(options);
 
@@ -203,7 +205,7 @@ var Game = {
 
 	drawRelative: function(x, y, c, color){
 		var o = this.display.getOptions();
-		var offx = Math.floor(o.width / 4) - this.player.x;
+		var offx = Math.floor(o.width / 2) - this.player.x;
 		var offy = Math.floor(o.height / 2) - this.player.y;
 		x = x + offx;
 		if(x < 0) return;
