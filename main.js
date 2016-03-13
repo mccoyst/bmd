@@ -175,13 +175,6 @@ var Game = {
 		}
 	},
 
-	generatePlayer: function(cells){
-		var parts = cells[0].split(",");
-		var x = parseInt(parts[0]);
-		var y = parseInt(parts[1]);
-		this.player = new Player(x, y);
-	},
-
 	drawWholeMap: function(){
 		this.display.clear();
 		for(var key in this.map){
