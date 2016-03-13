@@ -19,7 +19,7 @@ var Player = function(x, y){
 };
 
 Player.prototype.draw = function(){
-	Game.display.draw(this.x, this.y, "@", "#f00");
+	Game.drawRelative(this.x, this.y, "@", "#f00");
 };
 
 Player.prototype.act = function(){
@@ -47,10 +47,13 @@ Player.prototype.handleEvent = function(e){
 		return;
 	}
 
-	// Draw what was beneath the player:
-	Game.drawPartMap(this.x+","+this.y);
 	this.x = x1;
 	this.y = y1;
+
+	// Everything moved
+	Game.drawWholeMap();
+	Game.enemy.draw();
+
 	this.draw();
 	window.removeEventListener("keydown", this);
 	Game.engine.unlock();
@@ -74,7 +77,7 @@ var Opponent = function(x, y){
 };
 
 Opponent.prototype.draw = function(){
-	Game.display.draw(this.x, this.y, "&", "#911");
+	Game.drawRelative(this.x, this.y, "&", "#911");
 };
 
 Opponent.prototype.act = function(){
@@ -119,7 +122,7 @@ var Game = {
 		tileset.src = "tiles.png";
 		var options = {
 			layout: "tile",
-			bg: "transparent",
+			bg: "white",
 			tileWidth: 32,
 			tileHeight: 32,
 			tileSet: tileset,
@@ -180,6 +183,7 @@ var Game = {
 	},
 
 	drawWholeMap: function(){
+		this.display.clear();
 		for(var key in this.map){
 			this.drawPartMap(key);
 		}
@@ -189,7 +193,7 @@ var Game = {
 		var parts = key.split(",");
 		var x = parseInt(parts[0]);
 		var y = parseInt(parts[1]);
-		this.display.draw(x, y, this.map[key], this.colors[this.map[key]]);
+		this.drawRelative(x, y, this.map[key], this.colors[this.map[key]]);
 	},
 
 	createBeing: function(what, cells){
@@ -197,6 +201,18 @@ var Game = {
 		var x = parseInt(parts[0]);
 		var y = parseInt(parts[1]);
 		return new what(x, y);
+	},
+
+	drawRelative: function(x, y, c, color){
+		var o = this.display.getOptions();
+		var offx = Math.floor(o.width / 4) - this.player.x;
+		var offy = Math.floor(o.height / 2) - this.player.y;
+		console.log("offx " + offx + ", offy " + offy);
+		x = x + offx;
+		if(x < 0) return;
+		y = y + offy;
+		if(y < 0) return;
+		this.display.draw(x, y, c, color);
 	},
 };
 
