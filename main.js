@@ -143,8 +143,19 @@ var Game = {
 			canvas.style['border-width'] = '1px';
 			document.body.appendChild(canvas);
 			var cx = canvas.getContext("2d");
-			cx.imageSmoothingEnabled = false;
 
+			if (window.devicePixelRatio > 1) {
+				var cw = canvas.width;
+				var ch = canvas.height;
+
+				canvas.width = cw * window.devicePixelRatio;
+				canvas.height = ch * window.devicePixelRatio;
+				canvas.style.width = cw + 'px';
+				canvas.style.height = ch + 'px';
+
+				cx.scale(window.devicePixelRatio, window.devicePixelRatio);
+				cx.imageSmoothingEnabled = false;
+			}
 
 			Game.generateMap();
 			var sched = new ROT.Scheduler.Simple();
