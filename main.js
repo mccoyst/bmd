@@ -19,7 +19,7 @@ var Player = function(x, y){
 };
 
 Player.prototype.draw = function(){
-	Game.drawRelative(this.x, this.y, "@", "#f00");
+	Game.drawRelative(this.x, this.y, [Game.map[this.x+","+this.y], "@"], "#f00");
 };
 
 Player.prototype.act = function(){
@@ -77,7 +77,7 @@ var Opponent = function(x, y){
 };
 
 Opponent.prototype.draw = function(){
-	Game.drawRelative(this.x, this.y, "&", "#911");
+	Game.drawRelative(this.x, this.y, [Game.map[this.x+","+this.y], "&"], "#911");
 };
 
 Opponent.prototype.act = function(){
