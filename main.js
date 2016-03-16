@@ -46,6 +46,9 @@ Player.prototype.handleEvent = function(e){
 	if(!(nk in Game.map)){
 		return;
 	}
+	if(x1 === Game.enemy.x && y1 === Game.enemy.y){
+		return;
+	}
 
 	this.x = x1;
 	this.y = y1;
