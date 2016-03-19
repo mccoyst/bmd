@@ -18,6 +18,7 @@ keymap[ROT["VK_F"]] = 2;
 var Player = function(x, y){
 	this.x = x;
 	this.y = y;
+	this.won = false;
 };
 
 Player.prototype.draw = function(){
@@ -26,6 +27,9 @@ Player.prototype.draw = function(){
 
 Player.prototype.act = function(){
 	Game.engine.lock();
+	if(this.won){
+		return;
+	}
 	window.addEventListener("keydown", this);
 };
 
@@ -34,6 +38,9 @@ Player.prototype.handleEvent = function(e){
 
 	if(c === 13 || c === 32){
 		this.openBox();
+		if(this.won){
+			window.removeEventListener("keydown", this);
+		}
 		return;
 	}
 
@@ -73,6 +80,7 @@ Player.prototype.openBox = function(){
 	}
 	if(key === Game.prize){
 		Game.display.drawText("you did it, hooray.");
+		this.won = true;
 		return;
 	}
 	Game.display.drawText("you didn't do it, boo.");
