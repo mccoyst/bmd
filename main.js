@@ -49,7 +49,8 @@ Player.prototype.handleEvent = function(e){
 		return;
 	}
 	if(x1 === Game.enemy.x && y1 === Game.enemy.y){
-		alert("LOSER");
+		window.removeEventListener("keydown", this);
+		Game.display.drawText("LOSER");
 		return;
 	}
 
@@ -71,10 +72,10 @@ Player.prototype.openBox = function(){
 		return;
 	}
 	if(key === Game.prize){
-		alert("you did it, hooray.");
+		Game.display.drawText("you did it, hooray.");
 		return;
 	}
-	alert("you didn't do it, boo.");
+	Game.display.drawText("you didn't do it, boo.");
 };
 
 var Opponent = function(x, y){
@@ -91,9 +92,6 @@ Opponent.prototype.act = function(){
 		return x+","+y in Game.map;
 	};
 	var astar = new ROT.Path.AStar(Game.player.x, Game.player.y, passable, {topology:4});
-	if(!astar){
-		alert("help");
-	}
 	var path = [];
 	var addpath = function(x, y){
 		path.push([x, y]);
@@ -103,7 +101,7 @@ Opponent.prototype.act = function(){
 	path.shift();
 	if(path.length <= 1){
 		Game.engine.lock();
-		alert("LOSER");
+		Game.display.drawText("LOSER");
 	}else{
 		Game.drawPartMap(this.x+","+this.y);
 		this.x = path[0][0];
@@ -161,6 +159,14 @@ Display.prototype.draw = function(x, y, c){
 			srcx, srcy, this.tileWidth, this.tileHeight,
 			x, y, this.tileWidth, this.tileHeight);
 	}, this);
+};
+
+Display.prototype.drawText = function(s){
+	this.context.fillStyle = 'black';
+	this.context.font = "48px serif";
+	var m = this.context.measureText(s);
+	var x = (this.width * this.tileWidth) / 2 - m.width / 2;
+	this.context.fillText(s, x, this.tileHeight * 2);
 };
 
 Display.prototype.clear = function(){
