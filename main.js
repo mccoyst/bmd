@@ -92,9 +92,6 @@ Opponent.prototype.act = function(){
 		return x+","+y in Game.map;
 	};
 	var astar = new ROT.Path.AStar(Game.player.x, Game.player.y, passable, {topology:4});
-	if(!astar){
-		alert("help");
-	}
 	var path = [];
 	var addpath = function(x, y){
 		path.push([x, y]);
