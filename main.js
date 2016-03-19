@@ -112,6 +112,49 @@ Opponent.prototype.act = function(){
 	}
 };
 
+var Display = function(opts){
+	this.options = opts;
+	this.tileWidth = opts.tileWidth || 16;
+	this.tileHeight = opts.tileHeight || 16;
+	this.tileSet = opts.tileSet;
+	this.tileMap = opts.tileMap;
+	this.width = opts.width || 10;
+	this.height = opts.height || 10;
+
+	var canvas = document.getElementById('game');
+	canvas.width = this.width * this.tileWidth;
+	canvas.height = this.height * this.tileHeight;
+	canvas.style['border-style'] = 'solid';
+	canvas.style['border-width'] = '1px';
+	var cx = canvas.getContext("2d");
+	cx.imageSmoothingEnabled = false;
+
+	if(window.devicePixelRatio > 1){
+		var cw = canvas.width;
+		var ch = canvas.height;
+
+		canvas.width = cw * window.devicePixelRatio;
+		canvas.height = ch * window.devicePixelRatio;
+		canvas.style.width = cw + 'px';
+		canvas.style.height = ch + 'px';
+
+		cx.scale(window.devicePixelRatio, window.devicePixelRatio);
+		cx.imageSmoothingEnabled = false;
+	}
+	this.canvas = canvas;
+	this.context = cx;
+};
+
+Display.prototype.draw = function(x, y, c){
+	x = this.tileWidth * x;
+	y = this.tileHeight * y;
+	
+};
+
+Display.prototype.clear = function(){
+	this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+};
+
 var Game = {
 	engine: null,
 	display: null,
@@ -141,28 +184,10 @@ var Game = {
 			width: 18,
 			height: 18,
 		};
-		this.display = new ROT.Display(options);
+		//this.display = new ROT.Display(options);
+		this.display = new Display(options);
 
 		tileset.onload = function(){
-			var canvas = Game.display.getContainer();
-			canvas.style['border-style'] = 'solid';
-			canvas.style['border-width'] = '1px';
-			document.body.appendChild(canvas);
-			var cx = canvas.getContext("2d");
-
-			if(window.devicePixelRatio > 1){
-				var cw = canvas.width;
-				var ch = canvas.height;
-
-				canvas.width = cw * window.devicePixelRatio;
-				canvas.height = ch * window.devicePixelRatio;
-				canvas.style.width = cw + 'px';
-				canvas.style.height = ch + 'px';
-
-				cx.scale(window.devicePixelRatio, window.devicePixelRatio);
-				cx.imageSmoothingEnabled = false;
-			}
-
 			Game.generateMap();
 			var sched = new ROT.Scheduler.Simple();
 			sched.add(Game.player, true);
@@ -223,7 +248,7 @@ var Game = {
 	},
 
 	drawRelative: function(x, y, c, color){
-		var o = this.display.getOptions();
+		var o = this.display.options;
 		var offx = Math.floor(o.width / 2) - this.player.x;
 		var offy = Math.floor(o.height / 2) - this.player.y;
 		x = x + offx;
