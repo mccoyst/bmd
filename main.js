@@ -267,7 +267,7 @@ var Game = {
 		return new what(x, y);
 	},
 
-	drawRelative: function(x, y, c, color){
+	drawRelative: function(x, y, c){
 		var o = this.display.options;
 		var offx = Math.floor(o.width / 2) - this.player.x;
 		var offy = Math.floor(o.height / 2) - this.player.y;
@@ -275,7 +275,7 @@ var Game = {
 		if(x < 0) return;
 		y = y + offy;
 		if(y < 0) return;
-		this.display.draw(x, y, c, color);
+		this.display.draw(x, y, c);
 	},
 };
 
