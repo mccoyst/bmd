@@ -140,6 +140,8 @@ var Display = function(opts){
 
 		cx.scale(window.devicePixelRatio, window.devicePixelRatio);
 		cx.imageSmoothingEnabled = false;
+		cx.mozImageSmoothingEnabled = false;
+		cx.webkitImageSmoothingEnabled = false;
 	}
 	this.canvas = canvas;
 	this.context = cx;
@@ -148,7 +150,17 @@ var Display = function(opts){
 Display.prototype.draw = function(x, y, c){
 	x = this.tileWidth * x;
 	y = this.tileHeight * y;
-	
+	if(!Array.isArray(c)){
+		c = [ c ];
+	}
+	c.forEach(function(e, i, a){
+		var src = this.tileMap[e];
+		var srcx = src[0]*this.tileWidth;
+		var srcy = src[1]*this.tileHeight;
+		this.context.drawImage(this.tileSet, 
+			srcx, srcy, this.tileWidth, this.tileHeight,
+			x, y, this.tileWidth, this.tileHeight);
+	}, this);
 };
 
 Display.prototype.clear = function(){
@@ -177,9 +189,9 @@ var Game = {
 			tileSet: tileset,
 			tileMap: {
 				".": [0, 0],
-				"*": [32, 0],
-				"@": [0, 32],
-				"&": [32, 32]
+				"*": [1, 0],
+				"@": [0, 1],
+				"&": [1, 1]
 			},
 			width: 18,
 			height: 18,
