@@ -21,7 +21,7 @@ var Player = function(x, y){
 };
 
 Player.prototype.draw = function(){
-	Game.drawRelative(this.x, this.y, [Game.map[this.x+","+this.y], "@"], "#f00");
+	Game.drawRelative(this.x, this.y, [Game.map[this.x+","+this.y], "@"]);
 };
 
 Player.prototype.act = function(){
@@ -83,7 +83,7 @@ var Opponent = function(x, y){
 };
 
 Opponent.prototype.draw = function(){
-	Game.drawRelative(this.x, this.y, [Game.map[this.x+","+this.y], "&"], "#911");
+	Game.drawRelative(this.x, this.y, [Game.map[this.x+","+this.y], "&"]);
 };
 
 Opponent.prototype.act = function(){
@@ -173,16 +173,11 @@ var Game = {
 	player: null,
 	prize: null,
 	map: {},
-	colors: {
-		'.': '#fff',
-		'*': '#ff0',
-	},
 
 	init: function(){
 		var tileset = document.createElement("img");
 		tileset.src = "tiles.png";
 		var options = {
-			layout: "tile",
 			bg: "white",
 			tileWidth: 32,
 			tileHeight: 32,
@@ -196,7 +191,6 @@ var Game = {
 			width: 18,
 			height: 18,
 		};
-		//this.display = new ROT.Display(options);
 		this.display = new Display(options);
 
 		tileset.onload = function(){
@@ -249,7 +243,7 @@ var Game = {
 		var parts = key.split(",");
 		var x = parseInt(parts[0]);
 		var y = parseInt(parts[1]);
-		this.drawRelative(x, y, this.map[key], this.colors[this.map[key]]);
+		this.drawRelative(x, y, this.map[key]);
 	},
 
 	createBeing: function(what, cells){
