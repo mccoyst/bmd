@@ -23,7 +23,6 @@ Player.prototype.draw = function(){
 };
 
 Player.prototype.act = function(){
-	console.log("player turn");
 	Game.engine.lock();
 	window.addEventListener("keydown", this);
 };
@@ -39,8 +38,6 @@ Player.prototype.handleEvent = function(e){
 	if(!(c in keymap)){
 		return;
 	}
-
-	console.log("moving");
 
 	var diff = ROT.DIRS[8][keymap[c]];
 	var x1 = this.x + diff[0];
@@ -88,7 +85,6 @@ Opponent.prototype.draw = function(){
 };
 
 Opponent.prototype.act = function(){
-	console.log("enemy turn");
 	var passable = function(x, y){
 		return x+","+y in Game.map;
 	};
@@ -103,7 +99,6 @@ Opponent.prototype.act = function(){
 	astar.compute(this.x, this.y, addpath);
 
 	path.shift();
-	console.log("path length = " + path.length);
 	if(path.length <= 1){
 		Game.engine.lock();
 		alert("LOSER");
