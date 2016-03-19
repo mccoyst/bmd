@@ -49,6 +49,7 @@ Player.prototype.handleEvent = function(e){
 		return;
 	}
 	if(x1 === Game.enemy.x && y1 === Game.enemy.y){
+		window.removeEventListener("keydown", this);
 		Game.display.drawText("LOSER");
 		return;
 	}
