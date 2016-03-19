@@ -139,9 +139,9 @@ var Display = function(opts){
 		canvas.style.height = ch + 'px';
 
 		cx.scale(window.devicePixelRatio, window.devicePixelRatio);
-		cx.imageSmoothingEnabled = false;
 		cx.mozImageSmoothingEnabled = false;
 		cx.webkitImageSmoothingEnabled = false;
+		cx.imageSmoothingEnabled = false;
 	}
 	this.canvas = canvas;
 	this.context = cx;
