@@ -153,7 +153,7 @@ var Game = {
 			document.body.appendChild(canvas);
 			var cx = canvas.getContext("2d");
 
-			if (window.devicePixelRatio > 1) {
+			if(window.devicePixelRatio > 1){
 				var cw = canvas.width;
 				var ch = canvas.height;
 
