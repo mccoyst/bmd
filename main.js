@@ -1,3 +1,5 @@
+'use strict';
+
 var keymap = {};
 keymap[38] = 0; // up
 keymap[33] = 1;
