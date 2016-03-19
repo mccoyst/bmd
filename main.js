@@ -1,3 +1,5 @@
+'use strict';
+
 var keymap = {};
 keymap[38] = 0; // up
 keymap[33] = 1;
@@ -19,7 +21,7 @@ var Player = function(x, y){
 };
 
 Player.prototype.draw = function(){
-	Game.drawRelative(this.x, this.y, [Game.map[this.x+","+this.y], "@"], "#f00");
+	Game.drawRelative(this.x, this.y, [Game.map[this.x+","+this.y], "@"]);
 };
 
 Player.prototype.act = function(){
@@ -47,6 +49,7 @@ Player.prototype.handleEvent = function(e){
 		return;
 	}
 	if(x1 === Game.enemy.x && y1 === Game.enemy.y){
+		alert("LOSER");
 		return;
 	}
 
@@ -80,7 +83,7 @@ var Opponent = function(x, y){
 };
 
 Opponent.prototype.draw = function(){
-	Game.drawRelative(this.x, this.y, [Game.map[this.x+","+this.y], "&"], "#911");
+	Game.drawRelative(this.x, this.y, [Game.map[this.x+","+this.y], "&"]);
 };
 
 Opponent.prototype.act = function(){
@@ -98,7 +101,7 @@ Opponent.prototype.act = function(){
 	astar.compute(this.x, this.y, addpath);
 
 	path.shift();
-	if(path.length === 1){
+	if(path.length <= 1){
 		Game.engine.lock();
 		alert("LOSER");
 	}else{
@@ -109,57 +112,88 @@ Opponent.prototype.act = function(){
 	}
 };
 
+var Display = function(opts){
+	this.options = opts;
+	this.tileWidth = opts.tileWidth || 16;
+	this.tileHeight = opts.tileHeight || 16;
+	this.tileSet = opts.tileSet;
+	this.tileMap = opts.tileMap;
+	this.width = opts.width || 10;
+	this.height = opts.height || 10;
+
+	var canvas = document.getElementById('game');
+	canvas.width = this.width * this.tileWidth;
+	canvas.height = this.height * this.tileHeight;
+	canvas.style['border-style'] = 'solid';
+	canvas.style['border-width'] = '1px';
+	var cx = canvas.getContext("2d");
+	cx.imageSmoothingEnabled = false;
+
+	if(window.devicePixelRatio > 1){
+		var cw = canvas.width;
+		var ch = canvas.height;
+
+		canvas.width = cw * window.devicePixelRatio;
+		canvas.height = ch * window.devicePixelRatio;
+		canvas.style.width = cw + 'px';
+		canvas.style.height = ch + 'px';
+
+		cx.scale(window.devicePixelRatio, window.devicePixelRatio);
+		cx.mozImageSmoothingEnabled = false;
+		cx.webkitImageSmoothingEnabled = false;
+		cx.imageSmoothingEnabled = false;
+	}
+	this.canvas = canvas;
+	this.context = cx;
+};
+
+Display.prototype.draw = function(x, y, c){
+	x = this.tileWidth * x;
+	y = this.tileHeight * y;
+	if(!Array.isArray(c)){
+		c = [ c ];
+	}
+	c.forEach(function(e, i, a){
+		var src = this.tileMap[e];
+		var srcx = src[0]*this.tileWidth;
+		var srcy = src[1]*this.tileHeight;
+		this.context.drawImage(this.tileSet, 
+			srcx, srcy, this.tileWidth, this.tileHeight,
+			x, y, this.tileWidth, this.tileHeight);
+	}, this);
+};
+
+Display.prototype.clear = function(){
+	this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+};
+
 var Game = {
 	engine: null,
 	display: null,
 	player: null,
 	prize: null,
 	map: {},
-	colors: {
-		'.': '#fff',
-		'*': '#ff0',
-	},
 
 	init: function(){
 		var tileset = document.createElement("img");
 		tileset.src = "tiles.png";
 		var options = {
-			layout: "tile",
 			bg: "white",
 			tileWidth: 32,
 			tileHeight: 32,
 			tileSet: tileset,
 			tileMap: {
 				".": [0, 0],
-				"*": [32, 0],
-				"@": [0, 32],
-				"&": [32, 32]
+				"*": [1, 0],
+				"@": [0, 1],
+				"&": [1, 1]
 			},
 			width: 18,
 			height: 18,
 		};
-		this.display = new ROT.Display(options);
+		this.display = new Display(options);
 
 		tileset.onload = function(){
-			var canvas = Game.display.getContainer();
-			canvas.style['border-style'] = 'solid';
-			canvas.style['border-width'] = '1px';
-			document.body.appendChild(canvas);
-			var cx = canvas.getContext("2d");
-
-			if (window.devicePixelRatio > 1) {
-				var cw = canvas.width;
-				var ch = canvas.height;
-
-				canvas.width = cw * window.devicePixelRatio;
-				canvas.height = ch * window.devicePixelRatio;
-				canvas.style.width = cw + 'px';
-				canvas.style.height = ch + 'px';
-
-				cx.scale(window.devicePixelRatio, window.devicePixelRatio);
-				cx.imageSmoothingEnabled = false;
-			}
-
 			Game.generateMap();
 			var sched = new ROT.Scheduler.Simple();
 			sched.add(Game.player, true);
@@ -209,7 +243,7 @@ var Game = {
 		var parts = key.split(",");
 		var x = parseInt(parts[0]);
 		var y = parseInt(parts[1]);
-		this.drawRelative(x, y, this.map[key], this.colors[this.map[key]]);
+		this.drawRelative(x, y, this.map[key]);
 	},
 
 	createBeing: function(what, cells){
@@ -220,7 +254,7 @@ var Game = {
 	},
 
 	drawRelative: function(x, y, c, color){
-		var o = this.display.getOptions();
+		var o = this.display.options;
 		var offx = Math.floor(o.width / 2) - this.player.x;
 		var offy = Math.floor(o.height / 2) - this.player.y;
 		x = x + offx;
